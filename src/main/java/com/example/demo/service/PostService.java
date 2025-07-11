@@ -45,4 +45,9 @@ public class PostService {
                 .orElseThrow(()->new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
     }
 
+    //게시글 삭제
+    public void deleteById(Long id){
+        postRepository.deleteById(id);
+    }
+
 }
