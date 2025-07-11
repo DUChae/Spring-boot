@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>게시글 수정</title>
+</head>
+<body>
+<h1>✏ 게시글 수정</h1>
+<form th:action="@{'/posts/' + ${post.id}}" method="post" th:object="${post}">
+    제목: <input type="text" th:field="*{title}"><br>
+    작성자: <input type="text" th:field="*{author}"><br>
+    내용: <br>
+    <textarea th:field="*{content}" rows="10" cols="50"></textarea><br>
+    <button type="submit">수정 저장</button>
+</form>
+<a th:href="@{/posts}">목록으로</a>
+</body>
+</html>
