@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @Controller
@@ -26,7 +23,7 @@ public class PostController {
     @GetMapping
     public String listPosts(Model model){
         model.addAttribute("posts",postService.findAll());
-        return "redirect:/posts";
+        return "post/list";
     }
 
     //새 글 작성 폼
@@ -37,7 +34,7 @@ public class PostController {
     }
 
     //새 글 저장
-    @GetMapping
+    @PostMapping
     public String createPost(@ModelAttribute Post post){
         postService.save(post);
         return "redirect:/posts";
@@ -64,7 +61,7 @@ public class PostController {
 
 
     //글 수정
-    @GetMapping("/{id}/")
+    @PostMapping("/{id}")
     public String updatePost(@PathVariable Long id, @ModelAttribute Post post){
         Post existingPost=postService.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"게시물을 찾을 수 없습니다."));
         existingPost.setTitle(post.getTitle());
@@ -74,7 +71,7 @@ public class PostController {
         return "redirect:/posts/" + id;}
 
     //글 삭제
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String deletePost(@PathVariable Long id){
         postService.deleteById(id);
         return "redirect:/posts";
