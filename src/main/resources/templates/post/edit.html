@@ -6,10 +6,24 @@
 <body>
 <h1>✏ 게시글 수정</h1>
 <form th:action="@{'/posts/' + ${post.id}}" method="post" th:object="${post}">
-    제목: <input type="text" th:field="*{title}"><br>
-    작성자: <input type="text" th:field="*{author}"><br>
-    내용: <br>
-    <textarea th:field="*{content}" rows="10" cols="50"></textarea><br>
+    <div>
+        제목:
+        <input type="text" th:field="*{title}">
+        <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+    </div>
+
+    <div>
+        작성자:
+        <input type="text" th:field="*{author}">
+        <span th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></span>
+    </div>
+
+    <div>
+        내용:
+        <textarea th:field="*{content}" rows="10" cols="50"></textarea>
+        <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+    </div>
+
     <button type="submit">수정 저장</button>
 </form>
 <a th:href="@{/posts}">목록으로</a>

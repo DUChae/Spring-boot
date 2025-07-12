@@ -67,7 +67,11 @@ public class PostController {
 
     //글 수정
     @PostMapping("/{id}")
-    public String updatePost(@PathVariable Long id, @ModelAttribute Post post){
+    public String updatePost(@PathVariable Long id,@Valid @ModelAttribute Post post, BindingResult bindingResult, Model model){
+        if(bindingResult.hasErrors()){
+            model.addAttribute("post", post);
+            return "post/edit"; //유효성 검사 실패 시 수정 폼으로 돌아감
+        }
         Post existingPost=postService.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"게시물을 찾을 수 없습니다."));
         existingPost.setTitle(post.getTitle());
         existingPost.setContent(post.getContent());
