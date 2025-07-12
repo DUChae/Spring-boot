@@ -2,10 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.Post;
 import com.example.demo.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -35,7 +37,10 @@ public class PostController {
 
     //새 글 저장
     @PostMapping
-    public String createPost(@ModelAttribute Post post){
+    public String createPost(@Valid @ModelAttribute Post post, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return "post/new"; //유효성 검사 실패 시 새 글 작성 폼으로 돌아감
+        }
         postService.save(post);
         return "redirect:/posts";
     }
