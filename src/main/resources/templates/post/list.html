@@ -9,12 +9,28 @@
     <a th:href="@{/posts/new}">새 게시글 작성</a>
     <hr>
 <ul>
-    <li th:each="post: ${posts}">
+    <li th:each="post: ${postPage.content}">
         <a th:href="@{'/posts/'+${post.id}}">
             <strong th:text="${post.title}">제목</strong>
         </a>
         <span th:text="'- 작성자: '+${post.author}"></span>
     </li>
 </ul>
+
+
+<div>
+    <span th:if="${currentPage>0}">
+        <a href="@{/posts(page=${currentPage - 1})}">이전 페이지</a>
+    </span>
+    <span th:each="pageNum: ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/posts(page=${pageNum})}" th:text="${pageNum + 1}"
+           th:classappend="${pageNum==currentPage}?'active':''">1</a>
+    </span>
+    <span th:if="${currentPage < totalPages - 1}">
+        <a href="@{/posts(page=${currentPage + 1})}">다음 페이지</a>
+    </span>
+</div>
+
+
 </body>
 </html>

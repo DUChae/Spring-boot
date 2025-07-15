@@ -1,9 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Post;
-import com.example.demo.service.PostService;
+import com.example.demo.service.PostServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,17 +17,25 @@ import org.springframework.web.server.ResponseStatusException;
 @Controller
 @RequestMapping("/posts")
 public class PostController {
-    private final PostService postService;
+    private final PostServiceImpl postService;
 
     @Autowired
-    public PostController(PostService postService){
+    public PostController(PostServiceImpl postService){
         this.postService = postService;
     }
 
     //게시글 전체 조회
     @GetMapping
-    public String listPosts(Model model){
-        model.addAttribute("posts",postService.findAll());
+    public String listPosts(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            Model model){
+        Pageable pageable= PageRequest.of(page,size);
+        Page<Post> postPage=postService.findAll(pageable);
+
+        model.addAttribute("postPage",postPage);
+        model.addAttribute("currentPage",page);
+        model.addAttribute("totalPages", postPage.getTotalPages());
         return "post/list";
     }
 
