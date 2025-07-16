@@ -57,4 +57,11 @@ public Page<Post> findAll(Pageable pageable){
         postRepository.deleteById(id);
     }
 
+
+    //제목으로 게시글 검색
+    @Override
+    public Page<Post> findByTitle(String keword,Pageable pageable){
+        return postRepository.findByTitleContaining(keword,pageable);
+    }
+
 }

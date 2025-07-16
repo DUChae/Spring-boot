@@ -10,4 +10,6 @@ public interface PostService {
     Page<Post> findAll(Pageable pageable);
     Optional<Post> findById(Long id);
     Post save(Post post);
-    void deleteById(Long id);}
+    void deleteById(Long id);
+    Page<Post> findByTitle(String keword, Pageable pageable);
+}

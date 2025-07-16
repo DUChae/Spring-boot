@@ -6,6 +6,10 @@
 </head>
 <body>
     <h1>게시글 목록</h1>
+    <form th:action="@{/posts}" method="get">
+        <input type="text" name="keyword" placeholder="제목 검색" th:value="${keyword}">
+        <button type="submit">검색</button>
+    </form>
     <a th:href="@{/posts/new}">새 게시글 작성</a>
     <hr>
 <ul>

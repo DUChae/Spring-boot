@@ -29,9 +29,16 @@ public class PostController {
     public String listPosts(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value= "keyword", required = false) String keyword,
             Model model){
         Pageable pageable= PageRequest.of(page,size);
         Page<Post> postPage=postService.findAll(pageable);
+
+        if(keyword!=null&&!keyword.isBlank()){
+            postPage=postService.findByTitle(keyword,pageable);
+        }else{
+            postPage=postService.findAll(pageable);
+        }
 
         model.addAttribute("postPage",postPage);
         model.addAttribute("currentPage",page);
