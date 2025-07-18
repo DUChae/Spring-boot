@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>게시글 목록</title>
+    <style>
+        .author{
+            margin-left:50px;
+        }
+    </style>
 </head>
 <body>
     <h1>게시글 목록</h1>
@@ -17,7 +22,8 @@
         <a th:href="@{'/posts/'+${post.id}}">
             <strong th:text="${post.title}">제목</strong>
         </a>
-        <span th:text="'- 작성자: '+${post.author}"></span>
+        <span class="author" th:text="${post.author}"></span>
+        <span th:text="${#temporals.format(post.createdAt,'HH:mm')}"></span>
     </li>
 </ul>
 
