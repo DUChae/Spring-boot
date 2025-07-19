@@ -15,9 +15,20 @@ public class User{
     @NotBlank(message="이름을 입력해주세요.")
     private Long id;
 
+    @NotBlank(message="이름을 입력해주세요.")
+    private String name;
+
     @NotBlank(message="아이디를 입력해주세요.")
     @Column(unique = true)
     private String username;
+
+    @NotBlank(message="이메일을 입력해주세요.")
+    private String email;
+
+    @NotBlank(message="닉네임을 입력해주세요.")
+    @Column(unique = true)
+    private String nickname;
+
 
     @NotBlank(message="비밀번호를 입력해주세요.")
     private String password;
