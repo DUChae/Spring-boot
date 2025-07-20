@@ -33,11 +33,18 @@ public class UserController {
     //회원가입 처리
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") User user,
-                               BindingResult bindingResult){
+                               BindingResult bindingResult,
+                               Model model) {
         if(bindingResult.hasErrors()){
             return "user/register"; //유효성 검사 실패 시 회원가입 폼으로 돌아감
         }
-        userService.registerUser(user);
+        try{
+            userService.registerUser(user);
+        }catch(IllegalArgumentException e){
+            model.addAttribute("registrationError",e.getMessage());
+            return "user/register"; //아이디 중복 등 예외 발생 시 회원가입 폼으로 돌아감
+        }
+
         return "redirect:/login"; //회원가입 성공 후 로그인 페이지로 리다이렉트
     }
 
