@@ -12,7 +12,6 @@ import lombok.Setter;
 @Table(name="users")
 public class User{
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @NotBlank(message="이름을 입력해주세요.")
     private Long id;
 
     @NotBlank(message="이름을 입력해주세요.")
