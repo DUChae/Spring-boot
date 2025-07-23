@@ -1,13 +1,18 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Post;
+import com.example.demo.domain.User;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.PostServiceImpl;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,9 +24,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class PostController {
     private final PostServiceImpl postService;
 
+    private final UserRepository userRepository;
     @Autowired
-    public PostController(PostServiceImpl postService){
+    public PostController(PostServiceImpl postService,UserRepository userRepository) {
         this.postService = postService;
+        this.userRepository = userRepository;
     }
 
     //게시글 전체 조회
@@ -55,14 +62,24 @@ public class PostController {
 
     //새 글 저장
     @PostMapping
-    public String createPost(@Valid @ModelAttribute Post post, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            return "post/new"; //유효성 검사 실패 시 새 글 작성 폼으로 돌아감
+    public String createPost(@Valid @ModelAttribute("post") Post postForm,
+                             BindingResult bindingResult,
+                             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        if (bindingResult.hasErrors()) {
+            return "post/new";
         }
+
+        Post post = new Post();
+        post.setTitle(postForm.getTitle());
+        post.setContent(postForm.getContent());
+
+        // ✅ 로그인 유저 바로 설정
+        post.setAuthor(customUserDetails.getUser());
+
         postService.save(post);
         return "redirect:/posts";
     }
-
     //특정 글 상세 보기
     @GetMapping("/{id}")
     public String viewPost(@PathVariable Long id, Model model){
@@ -74,10 +91,13 @@ public class PostController {
 
     //글 수정 폼
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Long id, Model model){
+    public String showEditForm(@PathVariable Long id, Model model,@AuthenticationPrincipal CustomUserDetails customUserDetails){
         Post post=postService.findById(id)
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"게시물을 찾을 수 없습니다."));
 
+        if(!post.getAuthor().getId().equals(customUserDetails.getUser().getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"수정 권한이 없습니다.");
+        }
         model.addAttribute("post",post);
         return "post/edit";
     }
@@ -93,7 +113,6 @@ public class PostController {
         Post existingPost=postService.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"게시물을 찾을 수 없습니다."));
         existingPost.setTitle(post.getTitle());
         existingPost.setContent(post.getContent());
-        existingPost.setAuthor(post.getAuthor());
         postService.save(existingPost);
         return "redirect:/posts/" + id;}
 
