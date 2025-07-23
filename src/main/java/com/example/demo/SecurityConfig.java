@@ -22,7 +22,10 @@ public class SecurityConfig {
         http
                 .userDetailsService(userDetailsService)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/register", "/login", "/css/**", "/js/**").permitAll() // ← 꼭 추가
+                        .requestMatchers("/users/register",
+                                "/login", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/posts/new","/posts/edit/**",
+                                "/posts/delete/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
