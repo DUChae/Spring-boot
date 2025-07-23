@@ -15,14 +15,20 @@
         <input type="text" name="keyword" placeholder="제목 검색" th:value="${keyword}">
         <button type="submit">검색</button>
     </form>
-    <a th:href="@{/posts/new}">새 게시글 작성</a>
+
+    <div th:if="${#authorization.expression('isAuthenticated()')}">
+        <a th:href="@{/posts/new}">새 게시글 작성</a>
+    </div>
+
     <hr>
 <ul>
     <li th:each="post: ${postPage.content}">
         <a th:href="@{'/posts/'+${post.id}}">
             <strong th:text="${post.title}">제목</strong>
         </a>
-        <span class="author" th:text="${post.author}"></span>
+        <span class="author" th:text="${post.author.nickname}"></span>
+
+
         <span th:text="${#temporals.format(post.createdAt,'HH:mm')}"></span>
     </li>
 </ul>

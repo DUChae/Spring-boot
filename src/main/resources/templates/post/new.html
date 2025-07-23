@@ -8,8 +8,7 @@
 <form th:action="@{/posts}" method="post" th:object="${post}">
     제목: <input type="text" th:field="*{title}"><br>
     <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
-    작성자: <input type="text" th:field="*{author}"><br>
-    <p th:if="${#fields.hasErrors('author')}" th:errors="*{title}"></p>
+    <p>작성자: <span th:text="${#authentication.principal.user.nickname}">로그인 사용자</span></p>
     내용: <br>
     <textarea th:field="*{content}" rows="10" cols="50"></textarea><br>
     <p th:if="${#fields.hasErrors('content')}" th:errors="*{title}"></p>

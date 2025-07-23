@@ -14,7 +14,7 @@
 
     <div>
         작성자:
-        <input type="text" th:field="*{author}">
+        <span th:text="${post.author.username}"></span>
         <span th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></span>
     </div>
 
