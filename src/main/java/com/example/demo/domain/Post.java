@@ -30,10 +30,10 @@ public class Post {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    @NotBlank(message = "작성자를 입력해주세요.")
-    @Size(max=100,message="작성자 이름은 100자 이내로 입력해주세요.")
-    private String author;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User author;
 
     @CreatedDate
     @Column(updatable = false)
