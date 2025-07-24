@@ -3,6 +3,7 @@ package com.example.demo.service;
 
 import com.example.demo.domain.Post;
 import com.example.demo.repository.PostRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,14 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
 
 
-    //생성자 주입 방식으로 PostRepository를 주입
-    public PostServiceImpl(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
 
     //게시글 전체 조회
 @Override
