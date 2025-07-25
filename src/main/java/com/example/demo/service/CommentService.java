@@ -1,22 +1,12 @@
+// src/main/java/com/example/demo/service/CommentService.java
 package com.example.demo.service;
 
-
 import com.example.demo.domain.Comment;
-import com.example.demo.repository.CommentRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.example.demo.domain.Post;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class CommentService {
-    private final CommentRepository commentRepository;
-    public List<Comment> getCommentsByPostId(Long postId){
-        return commentRepository.findByPostIdOrderByCreatedAtAsc(postId);
-    }
-
-    public Comment save(Comment comment){
-        return commentRepository.save(comment);
-    }
+public interface CommentService {
+    void save(Comment comment);
+    List<Comment> findByPost(Post post);
 }
