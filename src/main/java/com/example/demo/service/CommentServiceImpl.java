@@ -26,4 +26,10 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> findByPost(Post post) {
         return commentRepository.findByPostIdOrderByCreatedAtAsc(post.getId());
     }
+
+    @Override
+    public Comment findById(Long id){
+        return commentRepository.findById(id)
+                .orElseThrow(()->new IllegalArgumentException("Comment not found"));
+    }
 }
