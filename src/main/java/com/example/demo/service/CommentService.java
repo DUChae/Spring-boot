@@ -9,4 +9,7 @@ import java.util.List;
 public interface CommentService {
     void save(Comment comment);
     List<Comment> findByPost(Post post);
+
+    Comment findById(Long id);
+
 }
