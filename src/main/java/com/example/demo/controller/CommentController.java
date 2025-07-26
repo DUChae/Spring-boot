@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,8 +50,37 @@ public class CommentController {
     }
 
 
+    //댓글 수정 폼 요청
+    @GetMapping("/comments/{id}/edit")
+    public String editCommentForm(@PathVariable Long id,
+                              Model model,
+                              @AuthenticationPrincipal UserDetails userDetails){
+
+        Comment comment=commentService.findById(id);
+        if(!comment.getAuthor().getUsername().equals(userDetails.getUsername())){
+            throw new IllegalArgumentException("해당 댓글을 수정할 권한이 없습니다.");
+        }
+        model.addAttribute("comment",comment);
+        return "comment/edit";
+    }
 
 
+    //댓글 수정 처리
+    @PostMapping("/comments/{id}/edit")
+    public String editComment(@PathVariable Long id,
+                              @RequestParam String content,
+                              @AuthenticationPrincipal UserDetails userDetails) {
+        Comment comment=commentService.findById(id);
+        if(!comment.getAuthor().getUsername().equals(userDetails.getUsername())){
+            throw new IllegalArgumentException("해당 댓글을 수정할 권한이 없습니다.");
+        }
+        comment.setContent(content);
+        comment.setUpdatedAt(LocalDateTime.now());
+        commentService.save(comment);
+
+        return "redirect:/posts/" + comment.getPost().getId();
+
+    }
 }
 
 
