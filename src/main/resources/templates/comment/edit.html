@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>댓글 수정</title>
+</head>
+<body>
+<h1>✏ 댓글 수정</h1>
+<form th:action="@{'/comments/'+${comment.id}+'/edit'}" method="post">
+    <textarea name="content" row="5" cols="50" th:text="${comment.content}"></textarea>
+    <input type="hidden" name="postId" th:value="${comment.post.id}"/>
+    <br/>
+    <button type="submit">수정</button>
+</form>
+
+<a href="@{'/posts/' + ${comment.post.id}}">게시글로 돌아가기</a>
+
+</body>
+</html>
