@@ -18,8 +18,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void save(Comment comment) {
+    public Comment save(Comment comment) {
         commentRepository.save(comment);
+        return comment;
     }
 
     @Override
@@ -31,5 +32,11 @@ public class CommentServiceImpl implements CommentService {
     public Comment findById(Long id){
         return commentRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("Comment not found"));
+    }
+
+    @Override
+    public void deleteById(Long id){
+        commentRepository.deleteById(id);
+
     }
 }

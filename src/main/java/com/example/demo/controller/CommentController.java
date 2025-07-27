@@ -81,6 +81,19 @@ public class CommentController {
         return "redirect:/posts/" + comment.getPost().getId();
 
     }
+
+    //댓글 삭제
+    @PostMapping("/comments/{id}/delete")
+    public String deleteComment(@PathVariable Long id,
+                                @AuthenticationPrincipal UserDetails userDetails){
+        Comment comment=commentService.findById(id);
+        if(!comment.getAuthor().getUsername().equals(userDetails.getUsername())){
+            throw new IllegalArgumentException("해당 댓글을 삭제할 권한이 없습니다.");
+        }
+        commentService.deleteById(id);
+        return "redirect:/posts/" + comment.getPost().getId();
+    }
+
 }
 
 
