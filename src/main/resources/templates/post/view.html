@@ -16,6 +16,12 @@
 
 <hr>
 
+<form th:action="@{'/posts/' + ${post.id} + '/like'}" method="post" style="display:inline;">
+    <button type="submit" th:text="${isLiked ? '추천 취소' : '추천'}"></button>
+    👍 <span th:text="${likeCount}">0</span>
+</form>
+
+<hr>
 <!-- 댓글 작성 폼 -->
 <form th:action="@{'/posts/' + ${post.id} + '/comments'}" method="post">
     <textarea name="content" rows="3" cols="50" placeholder="댓글을 입력하세요..."></textarea>

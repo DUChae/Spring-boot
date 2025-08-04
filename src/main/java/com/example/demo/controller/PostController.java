@@ -2,8 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.Post;
 import com.example.demo.domain.User;
+import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.CustomUserDetails;
+import com.example.demo.service.LikeService;
 import com.example.demo.service.PostServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,10 +28,19 @@ public class PostController {
     private final PostServiceImpl postService;
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final LikeService likeService;
+    private User user;
+
     @Autowired
-    public PostController(PostServiceImpl postService,UserRepository userRepository) {
+    public PostController(PostServiceImpl postService,
+                          UserRepository userRepository,
+                          PostRepository postRepository,
+                          LikeService likeService) {
         this.postService = postService;
         this.userRepository = userRepository;
+        this.postRepository = postRepository;
+        this.likeService = likeService;
     }
 
     //게시글 전체 조회
@@ -86,6 +98,11 @@ public class PostController {
         Post post=postService.findById(id)
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"게시물을 찾을 수 없습니다."));
         model.addAttribute("post",post);
+
+
+        //좋아요 수
+        model.addAttribute("likeCount",likeService.countLikes(post));
+        model.addAttribute("isLiked",likeService.isLiked(user,post));
         return "post/view";
     }
 
@@ -123,6 +140,18 @@ public class PostController {
         return "redirect:/posts";
     }
 
+
+    @PostMapping("/{postId}/like")
+    public String toggleLike(@PathVariable Long postId,
+                             @AuthenticationPrincipal UserDetails userDetails){
+        Post post=postRepository.findById(postId)
+                .orElseThrow(()->new IllegalArgumentException("게시글 없음"));
+        User user=userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(()->new IllegalArgumentException("유저 없음"));
+
+        likeService.toggleLike(user,post);
+        return "redirect:/posts/" + postId;
+    }
 
 
 
