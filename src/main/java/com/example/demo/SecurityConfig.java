@@ -22,10 +22,26 @@ public class SecurityConfig {
         http
                 .userDetailsService(userDetailsService)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/register",
-                                "/login", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/posts/new","/posts/edit/**",
-                                "/posts/delete/**").authenticated()
+                        // 1. 로그인해야만 접근 가능한 경로 (가장 구체적인 규칙을 먼저 배치)
+                        .requestMatchers(
+                                "/posts/new",
+                                "/posts/{id}/edit",
+                                "/posts/{id}/delete",
+                                "/posts/{id}/like"
+                        ).authenticated()
+
+                        // 2. 로그인 없이 접근 가능한 경로
+                        .requestMatchers(
+                                "/posts",
+                                "/posts/{id}",
+                                "/users/register",
+                                "/login",
+                                "/css/**",
+                                "/js/**",
+                                "/api/posts/**"
+                        ).permitAll()
+
+                        // 3. 위 규칙에 해당하지 않는 모든 나머지 요청은 로그인 필요
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
