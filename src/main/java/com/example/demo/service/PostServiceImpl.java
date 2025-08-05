@@ -23,7 +23,9 @@ public class PostServiceImpl implements PostService{
 public Page<Post> findAll(Pageable pageable){
         return postRepository.findAll(pageable);
 }
-
+    public List<Post> findAll() {
+        return postRepository.findAll();
+    }
     //게시글 단건 조회
     @Override
     public Optional<Post> findById(Long id){
