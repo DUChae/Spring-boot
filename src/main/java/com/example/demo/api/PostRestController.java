@@ -6,6 +6,7 @@ import com.example.demo.dto.PostResponseDto;
 import com.example.demo.service.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,4 +26,10 @@ public class PostRestController {
                 .toList();
     }
 
+    @GetMapping("/{id}")
+    public PostResponseDto getPost(@PathVariable Long id){
+        Post post=postService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다: " + id));
+        return new PostResponseDto(post);
+    }
 }
