@@ -26,17 +26,18 @@ public class SecurityConfig {
 
     // --- API 전용 SecurityFilterChain (우선순위 높음) ---
     @Bean
-    @Order(1)
+    @Order(1) // 우선순위 1
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/api/**") // '/api/**' 요청에만 적용
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                .securityMatcher("/api/**")
+                .csrf(csrf -> csrf.disable()) // ✅ CSRF 비활성화는 그대로 유지
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // ✅ 모든 API 요청을 무조건 허용
+                        .requestMatchers(HttpMethod.POST, "/api/**").permitAll() // ✅ POST 요청 명시적 허용
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()  // ✅ GET 요청 명시적 허용
+                        .anyRequest().authenticated() // 그 외 API 요청은 인증 필요
                 )
-                .formLogin(form -> form.disable()) // 로그인 폼 비활성화
-                .httpBasic(basic -> basic.disable()); // HTTP Basic 인증 비활성화
-
+                .formLogin(form -> form.disable())
+                .httpBasic(basic -> basic.disable());
         return http.build();
     }
 
