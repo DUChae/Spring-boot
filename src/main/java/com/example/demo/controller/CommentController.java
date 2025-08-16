@@ -4,6 +4,7 @@ package com.example.demo.controller;
 import com.example.demo.domain.Comment;
 import com.example.demo.domain.Post;
 import com.example.demo.domain.User;
+import com.example.demo.dto.CommentRequestDto;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.CommentService;
@@ -38,13 +39,9 @@ public class CommentController {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
 
-        Comment comment = new Comment();
-        comment.setPost(post);
-        comment.setAuthor(user);
-        comment.setContent(content);
-        comment.setCreatedAt(LocalDateTime.now());
-
-        commentService.save(comment);
+        CommentRequestDto requestDto=new CommentRequestDto();
+        requestDto.setContent(content);
+        commentService.createComment(postId,requestDto,user);
 
         return "redirect:/posts/" + postId;
     }
@@ -70,16 +67,12 @@ public class CommentController {
     public String editComment(@PathVariable Long id,
                               @RequestParam String content,
                               @AuthenticationPrincipal UserDetails userDetails) {
-        Comment comment=commentService.findById(id);
-        if(!comment.getAuthor().getUsername().equals(userDetails.getUsername())){
-            throw new IllegalArgumentException("해당 댓글을 수정할 권한이 없습니다.");
-        }
-        comment.setContent(content);
-        comment.setUpdatedAt(LocalDateTime.now());
-        commentService.save(comment);
+        User user=userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
+      Comment udpateComment=commentService.updateComment(id,content,user);
 
-        return "redirect:/posts/" + comment.getPost().getId();
 
+      return "redirect:/posts/" + udpateComment.getPost().getId();
     }
 
     //댓글 삭제
