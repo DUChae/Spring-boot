@@ -46,4 +46,15 @@ public class CommentRestController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<Void> updateComment(@PathVariable Long postId,
+                                              @PathVariable Long commentId,
+                                              @RequestBody CommentRequestDto dto,
+                                              @AuthenticationPrincipal UserDetails userDetails){
+        User user= userRepository.findByUsername("test")
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
+        commentService.updateComment(commentId,dto.getContent(),user);
+        return ResponseEntity.ok().build();
+    }
+
 }
